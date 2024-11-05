@@ -4,20 +4,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\API\AppAPIAuthenticationController;
+use App\Http\Controllers\API\ChatRoomController;
+use App\Http\Controllers\API\HealthcareProfessionalController;
 
+// Rutas públicas
+Route::post('token/create', [AppAPIAuthenticationController::class, 'login'])->name('login');
+Route::post('token/register', [AppAPIAuthenticationController::class, 'register']);
 
-Route::post('token/create', [\App\Http\Controllers\API\AppAPIAuthenticationController::class, 'login']);
-Route::post('token/register', [\App\Http\Controllers\API\AppAPIAuthenticationController::class, 'register']);
-
+// Rutas protegidas
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('token/logout', [\App\Http\Controllers\API\AppAPIAuthenticationController::class, 'logout']);
+    Route::post('token/logout', [AppAPIAuthenticationController::class, 'logout']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::apiResource('chat_room', \App\Http\Controllers\API\ChatRoomController::class);
+    Route::apiResource('chat_room', ChatRoomController::class);
+    Route::apiResource('healthcare_professionals', HealthcareProfessionalController::class);
 });
-
-
 
 /*
 
