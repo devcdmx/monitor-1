@@ -8,6 +8,13 @@ use App\Http\Controllers\API\AppAPIAuthenticationController;
 use App\Http\Controllers\API\ChatRoomController;
 use App\Http\Controllers\API\HealthcareProfessionalController;
 
+
+
+
+Route::post('/token', 'AuthController@issueToken');
+
+
+
 // Rutas públicas
 Route::post('token/create', [AppAPIAuthenticationController::class, 'login'])->name('login');
 Route::post('token/register', [AppAPIAuthenticationController::class, 'register']);

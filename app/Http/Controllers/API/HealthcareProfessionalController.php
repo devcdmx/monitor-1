@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\HealthcareProfessional;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Auth; // Para obtener el ID del usuario autenticado
+use Illuminate\Support\Facades\Auth; // Para obtener el ID del usuario autenticad
+use Spatie\Permission\Models\Role;
+use App\Models\User;
 
 class HealthcareProfessionalController extends Controller
 {
@@ -25,18 +27,33 @@ class HealthcareProfessionalController extends Controller
     {
         $validatedData = $request->validate([
             'nombre_completo' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed',
             'matricula' => 'required|integer',
             'sexo' => 'required|string',
             'especialidad' => 'required|string|max:255',
             'fecha_ingreso' => 'required|date',
             // Agrega más validaciones según sea necesario
         ]);
+    
+        // Crear usuario
+        $user = User::create([
+            'name' => $request->nombre_completo,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
+    
+        // Asignar rol "professional"
+        $user->assignRole('professional');
 
         // Asignar el user_id al ID del usuario autenticado
-        $validatedData['user_id'] = Auth::id();
-
+       // $validatedData['creado_por_user_id'] = Auth::id();
+    
+        // Asignar el user_id al ID del usuario creado
+        $validatedData['user_id'] = $user->id;
+    
         $healthcareProfessional = HealthcareProfessional::create($validatedData);
-
+    
         return response()->json($healthcareProfessional, 201);
     }
 

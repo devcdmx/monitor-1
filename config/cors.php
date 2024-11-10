@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://monitor.test')],
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 
